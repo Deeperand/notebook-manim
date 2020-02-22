@@ -1,0 +1,60 @@
+\chapter{Quick Start}
+\section{\Code{Scene}}
+    \subsection{Introduction}
+        \hspace*{2em}\Code{Scene} 是最基础和最主要的类, 几乎其它所有的类都由其构造而来
+
+    \subsection{Method}
+        \begin{enumerate}
+            \item \Code{Scene.plsy()}: 播放动画, 如:
+                \begin{lstlisting}[language=Python, gobble=20]
+                    .play(ShowCreation(circle))
+                    .play(FadeOut(circle))
+                    .play(GrowFromCenter(square))
+                    .play(Transform(square,triangle))
+                \end{lstlisting}
+            \item \Code{.add()}: places a mobject on screen at the start of the scene
+            \item \Code{arrow.next\_to()}: 使用相对位置进行移动, 如:
+                \begin{lstlisting}[language = {Python}, gobble = 20]
+                    arrow = Arrow(LEFT,UP)
+                    arrow.next_to(circle,DOWN+LEFT)
+                \end{lstlisting}
+            \item \Code{.move\_to()}: move the object to a specific location on the screen, (使用绝对位置?)
+            \item \Code{.wait(<number>)}: 控制停止的秒数, 默认为 1 秒
+        \end{enumerate}
+        
+\section{\Code{Mobject}}
+    \subsection{\Code{TextMobject}}
+        \hspace*{2em}Text rendering is based on Latex so you can use many Latex typesetting features.
+
+        \paragraph{\Code{.scale(<number>)} \\}
+            \hspace*{2em}缩放文字
+
+        \paragraph{\Code{.set\_color()} \\}
+            \hspace*{2em}设置文字的颜色. 颜色可以采用默认提供的一些常数. 具体的定义参见 \Code{constants.py}. 
+
+        \paragraph{\Code{.match\_color(<obj>)}}
+        In addition to setting the color, you can also match the color to another object. This is convenient since you can easily keep the color of two different objects as same without define extral variable.
+
+        \paragraph{\Code{.to\_edge()}, \Code{.to\_corner()}}
+            \hspace*{2em}You can align mobjects with the center of the edge of the screen by telling \Code{to\_edge()} whether you want the object to be \Code{UP}, \Code{DOWN}, \Code{LEFT}, or \Code{RIGHT}. You can also use \Code{to\_corner()}, in which case you need to combine two directions such as \Code{UP+LEFT} to indicate the corner.
+
+        \paragraph{\Code{.get\_corner()}}
+            \hspace*{2em}Each mobject has a bounding box that indicates the outermost edges of the mobject and you can get the coordinates of the corners of this bounding box using \Code{get\_corner()} and specifying a direction. Thus \Code{get\_corner(DOWN+LEFT)} will return the location of the lower left corner of a mobject.
+
+        \paragraph{\Code{.shift()} \\}
+            \hspace*{2em}变换物体的位置, 为达成缓慢上升的效果:
+                \begin{lstlisting}[language = {Python}, gobble = 20]
+                    self.play(ApplyMethod(my_first_text.shift,3*UP))
+                \end{lstlisting}
+            注意到其中 \Code{ApplyMethod()} 的重要性. 若没有该函数, 则上升瞬间完成. Notice the arguments of \Code{ApplyMethod()} is a pointer to the method (in this case \Code{my\_first\_text.shift} without any parentheses) followed by a comma and then the what you would normally include as the argument to the \Code{shift()} method. In other words, \Code{ApplyMethod(my\_first\_text.shift,3*UP)} will create an animation of shifting \Code{my\_first\_text} three MUnits up.
+
+\section{Other Function}
+    \paragraph{\Code{wait()}}
+        控制停止的秒数, 默认 1 秒
+
+\section{Constant}
+    \subsection{长度常数}
+        \Code{UP}, \Code{DOWN}, \Code{LEFT}, \Code{RIGHT}. 这些长度常数可以被当成向量来进行计算, 也就是说可以直接进行加减. (实际上它们本来也是通过 \Code{numpy} 的数组进行定义的)
+
+\section{\Code{VGroup}}
+    \hspace*{2em}The \Code{VGroup} class allows you to combine multiple mobjects into a single vectorized math object.
