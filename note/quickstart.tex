@@ -24,7 +24,12 @@
         
 \section{\Code{Mobject}}
     \subsection{\Code{TextMobject}}
-        \hspace*{2em}Text rendering is based on Latex so you can use many Latex typesetting features.
+        \hspace*{2em}Text rendering is based on Latex so you can use many Latex typesetting features, which means if you already known the rule of \LaTeX, it will be easily to use equation. One should be noted that the backslash should be tranfered by another baskslash. A more convenient way is use Python's raw string (add \Code{r} before the first quotation mark) e.g., those are two valid using methods:
+            \begin{lstlisting}[language = {Python}, gobble = 16]
+                eq1=TextMobject("$\\vec{X}_0 \\cdot \\vec{Y}_1 = 3$")
+                eq1=TextMobject(r"$\vec{X}_0 \cdot \vec{Y}_1 = 3$")
+            \end{lstlisting}
+        \hspace*{2em}When mobjects of any sort are created the default position seems to be the center of the screen. Once created you can use \Code{shift()} or \Code{move\_to()} to change the location of the mobjects.
 
         \paragraph{\Code{.scale(<number>)} \\}
             \hspace*{2em}缩放文字
@@ -32,13 +37,16 @@
         \paragraph{\Code{.set\_color()} \\}
             \hspace*{2em}设置文字的颜色. 颜色可以采用默认提供的一些常数. 具体的定义参见 \Code{constants.py}. 
 
-        \paragraph{\Code{.match\_color(<obj>)}}
-        In addition to setting the color, you can also match the color to another object. This is convenient since you can easily keep the color of two different objects as same without define extral variable.
+        \paragraph{\Code{.set\_color\_by\_gradient(<color\_1>, <color\_2>, <color\_3>)}}
+            \hspace*{2em}括号内的参数为一串以逗号分隔的颜色序列, 效果是生成按照该颜色序列进行的渐变色.
 
-        \paragraph{\Code{.to\_edge()}, \Code{.to\_corner()}}
+        \paragraph{\Code{.match\_color(<obj>)} \\}
+            \hspace*{2em}In addition to setting the color, you can also match the color to another object. This is convenient since you can easily keep the color of two different objects as same without define extral variable.
+
+        \paragraph{\Code{.to\_edge()}, \Code{.to\_corner()} \\}
             \hspace*{2em}You can align mobjects with the center of the edge of the screen by telling \Code{to\_edge()} whether you want the object to be \Code{UP}, \Code{DOWN}, \Code{LEFT}, or \Code{RIGHT}. You can also use \Code{to\_corner()}, in which case you need to combine two directions such as \Code{UP+LEFT} to indicate the corner.
 
-        \paragraph{\Code{.get\_corner()}}
+        \paragraph{\Code{.get\_corner()} \\}
             \hspace*{2em}Each mobject has a bounding box that indicates the outermost edges of the mobject and you can get the coordinates of the corners of this bounding box using \Code{get\_corner()} and specifying a direction. Thus \Code{get\_corner(DOWN+LEFT)} will return the location of the lower left corner of a mobject.
 
         \paragraph{\Code{.shift()} \\}
@@ -48,6 +56,23 @@
                 \end{lstlisting}
             注意到其中 \Code{ApplyMethod()} 的重要性. 若没有该函数, 则上升瞬间完成. Notice the arguments of \Code{ApplyMethod()} is a pointer to the method (in this case \Code{my\_first\_text.shift} without any parentheses) followed by a comma and then the what you would normally include as the argument to the \Code{shift()} method. In other words, \Code{ApplyMethod(my\_first\_text.shift,3*UP)} will create an animation of shifting \Code{my\_first\_text} three MUnits up.
 
+        \paragraph{\Code{.rotate()} \\}
+            旋转文字. 其中可调用常量 \Code{TAU}, 一个 \Code{TAU} 相当于 $2\MaPI$.
+
+        \paragraph{\Code{Write()}}
+            显示文字, 一个例子是:
+                \begin{lstlisting}[language = {Python}, gobble = 20]
+                    eq1=TextMobject("$\\vec{X}_0 \\cdot \\vec{Y}_1 = 3$")
+                    self.play(Write(eq1))
+                \end{lstlisting}
+            You can also pass a string to \Code{Write()} and it will create the TextMobject for you. \Code{Write()} needs to be inside of \Code{play()} in order to animate it.
+
+    \subsection{\Code{TexMobject}}
+        \hspace*{2em}Similar to \Code{TextMobject}, the only different is you can ignore the enclosed \Code{\$} symbol, which made it more convenient to type \LaTeX equation. There is a good example:
+            \begin{lstlisting}[language = {Python}, gobble = 16]
+                eq2=TexMobject(r"\vec{F}_{net} = \sum_i \vec{F}_i")
+            \end{lstlisting}
+
 \section{Other Function}
     \paragraph{\Code{wait()}}
         控制停止的秒数, 默认 1 秒
@@ -56,5 +81,14 @@
     \subsection{长度常数}
         \Code{UP}, \Code{DOWN}, \Code{LEFT}, \Code{RIGHT}. 这些长度常数可以被当成向量来进行计算, 也就是说可以直接进行加减. (实际上它们本来也是通过 \Code{numpy} 的数组进行定义的)
 
+        \textbf{Notation :}
+            \begin{enumerate}
+                \item The screen height is set to a default of 8 MUnits, which means a 2 MUnit shift corresponds to about a quarter of the screen height.
+            \end{enumerate}
+
 \section{\Code{VGroup}}
-    \hspace*{2em}The \Code{VGroup} class allows you to combine multiple mobjects into a single vectorized math object.
+    \hspace*{2em}The \Code{VGroup} class allows you to combine multiple mobjects into a single vectorized math object. The using of the class is like:
+        \begin{lstlisting}[language = {Python}, gobble = 12]
+            label2_group=VGroup(label2,label2.bg)
+        \end{lstlisting}
+    This statement combine the object \Code{label2} and \Code{label2.bg} then generate a new object.
